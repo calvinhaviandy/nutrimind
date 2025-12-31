@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NutriMind - Smart Nutrition Companion</title>
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300..800&display=swap" rel="stylesheet">
+
+<!-- Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { display: ["Manrope", "sans-serif"] },
+      colors: {
+        primary: "#135bec",
+        muted: "#5f7185",
+        bg: "#f6f6f8",
+      },
+    },
+  },
+};
+</script>
+</head>
+
+<body class="bg-bg font-display text-slate-900">
+
+  <!-- NAV -->
+  <header class="fixed top-0 inset-x-0 z-20 bg-white/90 backdrop-blur border-b">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2 font-extrabold text-xl">
+        <i data-lucide="leaf" class="text-primary"></i>
+        NutriMind
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-muted">
+        <a href="#features" class="hover:text-primary transition">Features</a>
+        <a href="#how" class="hover:text-primary transition">How it works</a>
+        <a href="#cta" class="hover:text-primary transition">Get started</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="/login" class="text-sm font-bold text-primary hover:underline">Login</a>
+        <a href="/register" class="text-sm font-bold px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition">Register</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-20">
+
+    <!-- HERO -->
+    <section class="max-w-6xl mx-auto px-4 py-14 grid lg:grid-cols-2 gap-10 items-center">
+      <div class="space-y-6">
+        <p class="text-primary font-semibold tracking-wide uppercase text-xs">AI Nutrition Companion</p>
+        <h1 class="text-4xl md:text-5xl font-black leading-tight">
+          Eat better with a personal plan tailored to your day.
+        </h1>
+        <p class="text-lg text-muted">
+          NutriMind tracks your meals, balances macros, and builds meal plans that fit your goals—no spreadsheets needed.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/register" class="px-5 py-3 rounded-lg bg-primary text-white font-bold hover:bg-primary/90 transition flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-5"></i>
+            Start free
+          </a>
+          <a href="/dashboard" class="px-5 py-3 rounded-lg bg-white border font-bold text-primary hover:border-primary/50 transition">
+            Go to dashboard
+          </a>
+        </div>
+        <div class="flex flex-wrap gap-4 text-sm text-muted">
+          <div class="flex items-center gap-2">
+            <i data-lucide="check-circle-2" class="w-4 text-emerald-500"></i>
+            Smart meal plans
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="check-circle-2" class="w-4 text-emerald-500"></i>
+            Macro tracking
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="check-circle-2" class="w-4 text-emerald-500"></i>
+            Progress insights
+          </div>
+        </div>
+      </div>
+      <div class="bg-white border rounded-2xl shadow-xl p-6 grid grid-cols-2 gap-4">
+        <div class="col-span-2 bg-gradient-to-br from-primary to-blue-700 text-white rounded-xl p-6">
+          <p class="text-sm uppercase font-semibold opacity-80">Today</p>
+          <h3 class="text-3xl font-black mt-2">2,100 kcal</h3>
+          <p class="text-sm opacity-80">Personalized target</p>
+          <div class="mt-4 grid grid-cols-3 gap-3 text-sm">
+            <div>
+              <p class="opacity-80">Protein</p>
+              <p class="font-extrabold">145 g</p>
+            </div>
+            <div>
+              <p class="opacity-80">Carbs</p>
+              <p class="font-extrabold">210 g</p>
+            </div>
+            <div>
+              <p class="opacity-80">Fat</p>
+              <p class="font-extrabold">65 g</p>
+            </div>
+          </div>
+        </div>
+        <div class="border rounded-xl p-4">
+          <div class="flex items-center justify-between text-sm text-muted mb-2">
+            <span>Breakfast</span><span>430 kcal</span>
+          </div>
+          <p class="font-bold">Oats, berries, almonds</p>
+        </div>
+        <div class="border rounded-xl p-4">
+          <div class="flex items-center justify-between text-sm text-muted mb-2">
+            <span>Lunch</span><span>520 kcal</span>
+          </div>
+          <p class="font-bold">Chicken salad, quinoa</p>
+        </div>
+        <div class="border rounded-xl p-4">
+          <div class="flex items-center justify-between text-sm text-muted mb-2">
+            <span>Dinner</span><span>610 kcal</span>
+          </div>
+          <p class="font-bold">Salmon, greens, rice</p>
+        </div>
+        <div class="border rounded-xl p-4">
+          <div class="flex items-center justify-between text-sm text-muted mb-2">
+            <span>Snack</span><span>180 kcal</span>
+          </div>
+          <p class="font-bold">Greek yogurt, nuts</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="bg-white border-y py-14">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <p class="text-primary font-semibold uppercase text-xs">Why NutriMind</p>
+            <h2 class="text-2xl font-black">Everything you need to stay on track</h2>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="p-5 rounded-xl border bg-bg hover:-translate-y-1 hover:shadow-lg transition">
+            <div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
+              <i data-lucide="bot" class="w-5"></i>
+            </div>
+            <h3 class="font-bold mb-2">AI meal planning</h3>
+            <p class="text-muted text-sm">Generate balanced plans that match your preferences, macros, and activity.</p>
+          </div>
+          <div class="p-5 rounded-xl border bg-bg hover:-translate-y-1 hover:shadow-lg transition">
+            <div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
+              <i data-lucide="apple" class="w-5"></i>
+            </div>
+            <h3 class="font-bold mb-2">Food logging</h3>
+            <p class="text-muted text-sm">Track meals, macros, and nutrients in one place to see daily impact.</p>
+          </div>
+          <div class="p-5 rounded-xl border bg-bg hover:-translate-y-1 hover:shadow-lg transition">
+            <div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
+              <i data-lucide="bar-chart-3" class="w-5"></i>
+            </div>
+            <h3 class="font-bold mb-2">Reports & insights</h3>
+            <p class="text-muted text-sm">Weekly and monthly trends that spotlight progress and gaps.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="max-w-6xl mx-auto px-4 py-14">
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <div>
+          <p class="text-primary font-semibold uppercase text-xs">How it works</p>
+          <h2 class="text-2xl font-black mt-2 mb-4">Simple steps to better habits</h2>
+          <ul class="space-y-4 text-muted">
+            <li class="flex gap-3">
+              <span class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">1</span>
+              <div>
+                <p class="font-semibold text-slate-900">Set your profile</p>
+                <p class="text-sm">Enter goals, activity level, and preferences.</p>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">2</span>
+              <div>
+                <p class="font-semibold text-slate-900">Generate your plan</p>
+                <p class="text-sm">AI builds balanced meals and macros for the day.</p>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">3</span>
+              <div>
+                <p class="font-semibold text-slate-900">Track & improve</p>
+                <p class="text-sm">Log meals, hydrate, and review reports to stay on target.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-white border rounded-2xl shadow-lg p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                <i data-lucide="user"></i>
+              </div>
+              <div>
+                <p class="text-sm text-muted">Goal</p>
+                <p class="font-bold">Lean & Active</p>
+              </div>
+            </div>
+            <span class="text-sm font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">Balanced</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-xl bg-orange-50 border p-4 text-center">
+              <p class="text-xs font-bold text-orange-600 uppercase mb-1">Calories</p>
+              <p class="text-xl font-black">2,100</p>
+            </div>
+            <div class="rounded-xl bg-blue-50 border p-4 text-center">
+              <p class="text-xs font-bold text-blue-600 uppercase mb-1">Protein</p>
+              <p class="text-xl font-black">145 g</p>
+            </div>
+            <div class="rounded-xl bg-yellow-50 border p-4 text-center">
+              <p class="text-xs font-bold text-yellow-600 uppercase mb-1">Carbs</p>
+              <p class="text-xl font-black">210 g</p>
+            </div>
+            <div class="rounded-xl bg-green-50 border p-4 text-center">
+              <p class="text-xs font-bold text-green-600 uppercase mb-1">Fat</p>
+              <p class="text-xl font-black">65 g</p>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-muted">Hydration</span>
+            <span class="font-bold text-primary">4 / 8 glasses</span>
+          </div>
+          <button class="w-full h-11 rounded-lg bg-primary text-white font-bold hover:bg-primary/90 transition">
+            Try it now
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="cta" class="max-w-6xl mx-auto px-4 pb-16">
+      <div class="bg-gradient-to-br from-primary to-blue-800 text-white rounded-2xl p-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div>
+          <p class="uppercase text-xs font-semibold opacity-80">Get started</p>
+          <h3 class="text-2xl font-black mt-1">Build your personalized plan today</h3>
+          <p class="text-sm opacity-85 mt-2">Join NutriMind and keep your nutrition, hydration, and goals in sync.</p>
+        </div>
+        <div class="flex gap-3">
+          <a href="/register" class="px-5 py-3 rounded-lg bg-white text-primary font-bold hover:bg-slate-100 transition">Create account</a>
+          <a href="/dashboard" class="px-5 py-3 rounded-lg border border-white/40 font-bold hover:bg-white/10 transition">View dashboard</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

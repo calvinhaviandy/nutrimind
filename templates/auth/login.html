@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - NutriMind</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300..800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ["Manrope", "sans-serif"],
+          },
+          colors: {
+            primary: "#135bec",
+            muted: "#637588",
+            bg: "#f6f6f8",
+          },
+        },
+      },
+    };
+  </script>
+</head>
+
+<body class="bg-bg font-display min-h-screen flex items-center justify-center px-4">
+
+<div class="w-full max-w-md bg-white border rounded-2xl p-8 shadow-sm">
+
+  <!-- Logo -->
+  <div class="flex flex-col items-center mb-8">
+    <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3">
+      <i data-lucide="leaf" class="text-primary w-6 h-6"></i>
+    </div>
+    <h1 class="text-2xl font-extrabold">NutriMind</h1>
+    <p class="text-sm text-muted mt-1">Sign in to continue</p>
+  </div>
+
+  <!-- Form -->
+  <form method="POST" class="space-y-5">
+
+    <!-- Email -->
+    <div>
+      <label class="block text-sm font-medium mb-1">Email</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-3 flex items-center text-muted">
+          <i data-lucide="mail" class="w-4"></i>
+        </span>
+        <input
+          type="email"
+          name="email"
+          placeholder="you@example.com"
+          class="w-full pl-10 pr-4 py-2.5 border rounded-lg
+                 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+        />
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div>
+      <label class="block text-sm font-medium mb-1">Password</label>
+      <div class="relative">
+        <span class="absolute inset-y-0 left-3 flex items-center text-muted">
+          <i data-lucide="lock" class="w-4"></i>
+        </span>
+        <input
+          type="password"
+          name="password"
+          placeholder="••••••••"
+          class="w-full pl-10 pr-4 py-2.5 border rounded-lg
+                 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+        />
+      </div>
+    </div>
+
+    <!-- Action -->
+    <button
+      type="submit"
+      class="w-full bg-primary text-white py-2.5 rounded-lg font-bold
+             hover:bg-primary/90 transition">
+      Login
+    </button>
+
+  </form>
+
+  <!-- Footer -->
+  <p class="text-sm text-center mt-6 text-muted">
+    Don’t have an account?
+    <a href="/register" class="text-primary font-semibold hover:underline">
+      Register
+    </a>
+  </p>
+
+</div>
+
+<script>
+  lucide.createIcons();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Scan Food - NutriMind</title>
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300..800&display=swap" rel="stylesheet">
+
+<!-- Lucide -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { display: ["Manrope", "sans-serif"] },
+      colors: {
+        primary: "#135bec",
+        muted: "#637588",
+        bg: "#f6f6f8",
+      },
+    },
+  },
+};
+</script>
+</head>
+
+<body class="bg-bg font-display text-slate-900">
+
+<div class="flex h-screen overflow-hidden">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside id="sidebar"
+      class="fixed md:relative inset-y-0 left-0 w-64 bg-white border-r z-40
+              transform -translate-x-full md:translate-x-0 transition duration-300">
+
+      <!-- Logo -->
+      <div class="h-16 flex items-center px-6 border-b">
+          <i data-lucide="leaf" class="text-primary mr-2"></i>
+          <span class="font-extrabold text-xl">NutriMind</span>
+      </div>
+
+      <!-- Menu -->
+      <nav class="p-4 space-y-2">
+          <a href="dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted hover:bg-slate-100"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+          <a href="food-log" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted hover:bg-slate-100"><i data-lucide="utensils"></i> Food Log</a>
+          <a href="meal-plan" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted hover:bg-slate-100"><i data-lucide="calendar"></i> Meal Plans</a>
+          <a href="reports" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted hover:bg-slate-100"><i data-lucide="bar-chart-3"></i> Reports</a>
+
+          <p class="mt-6 text-xs font-bold uppercase text-muted px-3">Settings</p>
+
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted hover:bg-slate-100"><i data-lucide="user"></i> Profile</a>
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted hover:bg-slate-100"><i data-lucide="settings"></i> Preferences</a>
+      </nav>
+
+      <div class="absolute bottom-0 w-full border-t p-4">
+          <button id="logoutBtn"
+              class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg
+                    text-muted hover:bg-red-50 hover:text-red-600 transition">
+              <i data-lucide="log-out" class="w-5"></i>
+              <span class="font-medium">Logout</span>
+          </button>
+      </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <div class="flex-1 flex flex-col">
+
+    <header class="md:hidden h-16 bg-white border-b flex items-center justify-between px-4">
+      <div class="flex items-center gap-2 font-bold">
+        <i data-lucide="leaf" class="text-primary"></i> NutriMind
+      </div>
+      <button onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-4 md:p-8">
+
+      <h1 class="text-3xl font-black mb-2">Food Scanner</h1>
+      <p class="text-muted mb-8">Capture or upload image to analyze nutrition</p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <!-- LEFT -->
+        <section class="lg:col-span-7 flex flex-col gap-6">
+
+          <div id="previewBox"
+          class="aspect-[4/3] bg-slate-100 border rounded-xl flex items-center justify-center overflow-hidden">
+            <span class="text-muted">No image selected</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="flex items-center gap-2">
+              <label class="text-sm font-semibold text-muted">Camera</label>
+              <select id="cameraFacing" class="flex-1 h-12 border rounded-lg px-3">
+                <option value="environment">Back</option>
+                <option value="user">Front</option>
+              </select>
+            </div>
+            <div class="flex gap-3">
+              <button id="captureBtn" onclick="capturePhoto()"
+              class="flex-1 h-12 rounded-lg bg-primary text-white font-bold flex items-center justify-center gap-2">
+                <i data-lucide="camera"></i> <span id="captureLabel">Start Camera</span>
+              </button>
+
+              <label class="flex-1 h-12 rounded-lg border font-semibold flex items-center justify-center gap-2 cursor-pointer">
+                <i data-lucide="upload"></i> Upload
+                <input type="file" accept="image/*" hidden onchange="handleFile(this.files[0])">
+              </label>
+            </div>
+          </div>
+
+          <div id="dropzone"
+          class="border-2 border-dashed rounded-xl p-8 text-center bg-white text-muted">
+            <i data-lucide="image" class="w-8 h-8 mx-auto mb-3"></i>
+            <p class="font-semibold">Drag & drop image here</p>
+          </div>
+
+        </section>
+
+        <!-- RIGHT -->
+        <section class="lg:col-span-5 flex flex-col gap-6">
+
+          <div class="bg-white border rounded-xl overflow-hidden shadow-sm">
+
+            <div class="p-6 border-b bg-slate-50 flex justify-between">
+              <h3 id="foodName" class="text-2xl font-black">-</h3>
+              <div class="text-right">
+                <div id="foodCalories" class="text-3xl font-black text-primary">0</div>
+                <div class="text-xs text-muted uppercase font-bold">kcal</div>
+              </div>
+            </div>
+
+            <div class="p-6 grid grid-cols-3 gap-4 text-center">
+              <div class="rounded-lg bg-orange-50 p-3 border">
+                <p class="text-xs font-bold text-orange-600">Protein</p>
+                <p id="proteinVal" class="text-xl font-extrabold">0g</p>
+              </div>
+              <div class="rounded-lg bg-blue-50 p-3 border">
+                <p class="text-xs font-bold text-blue-600">Carbs</p>
+                <p id="carbsVal" class="text-xl font-extrabold">0g</p>
+              </div>
+              <div class="rounded-lg bg-yellow-50 p-3 border">
+                <p class="text-xs font-bold text-yellow-600">Fat</p>
+                <p id="fatVal" class="text-xl font-extrabold">0g</p>
+              </div>
+            </div>
+
+            <div class="p-6 pt-0">
+              <button onclick="addToToday()"
+              class="flex items-center justify-center gap-2 h-11 w-full rounded-lg bg-primary text-white font-bold">
+                <i data-lucide="plus-circle"></i> Add to Today
+              </button>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Camera -->
+<video id="video" autoplay playsinline hidden></video>
+<canvas id="canvas" hidden></canvas>
+
+<!-- Toast -->
+<style>
+  .toast {
+    transition: transform .35s ease, opacity .35s ease, box-shadow .35s ease;
+    opacity: 0;
+    transform: translateY(12px) scale(.96);
+  }
+  .toast-show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  }
+  .toast-error { background:#fee2e2; color:#b91c1c; }
+  .toast-success { background:#ecfdf3; color:#15803d; }
+  .toast-info { background:#e0ecff; color:#1d4ed8; }
+</style>
+<div id="toast"
+  class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+         md:left-auto md:top-auto md:translate-x-0 md:translate-y-0
+         md:bottom-6 md:right-6
+         px-5 py-3 rounded-xl font-bold z-50 toast hidden">
+  Saved
+</div>
+
+<script>
+  
+  let currentNutrition = null
+  let currentImage = null
+  let currentFacing = "environment"
+  let activeStream = null
+
+  const previewBox = document.getElementById("previewBox")
+  const video = document.getElementById("video")
+  const canvas = document.getElementById("canvas")
+  const cameraFacing = document.getElementById("cameraFacing")
+  const captureBtn = document.getElementById("captureBtn")
+  const captureLabel = document.getElementById("captureLabel")
+
+  cameraFacing.addEventListener("change", () => {
+    currentFacing = cameraFacing.value
+  })
+
+  function toggleSidebar(){
+    document.getElementById("sidebar").classList.toggle("-translate-x-full")
+  }
+
+  function showImage(src){
+    currentImage = src
+    previewBox.innerHTML = `<img src="${src}" class="w-full h-full object-cover">`
+    analyzeImage(src)
+  }
+
+  async function capturePhoto(){
+    // First click: start camera preview, no auto snapshot
+    if(!activeStream){
+      const constraints = {
+        video: {
+          facingMode: { ideal: currentFacing },
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      }
+      try{
+        activeStream = await navigator.mediaDevices.getUserMedia(constraints)
+        video.srcObject = activeStream
+        video.hidden = false
+        previewBox.innerHTML = ""
+        previewBox.appendChild(video)
+        captureLabel.innerText = "Take Photo"
+      }catch(err){
+        console.error("Camera error", err)
+        showToast("Cannot access camera","error")
+      }
+      return
+    }
+
+    // Second click: take snapshot
+    const constraints = {
+      video: {
+        facingMode: { ideal: currentFacing }
+      }
+    }
+
+    await new Promise(res => {
+      if(video.readyState >= 2) return res()
+      video.onloadedmetadata = () => res()
+    })
+
+    canvas.width = video.videoWidth
+    canvas.height = video.videoHeight
+    canvas.getContext("2d").drawImage(video,0,0)
+    showImage(canvas.toDataURL("image/png"))
+
+    // stop stream and reset UI
+    activeStream.getTracks().forEach(t => t.stop())
+    activeStream = null
+    video.srcObject = null
+    video.hidden = true
+    captureLabel.innerText = "Start Camera"
+  }
+
+  function handleFile(file){
+    if(!file || !file.type.startsWith("image")) return
+    const reader = new FileReader()
+    reader.onload = e => showImage(e.target.result)
+    reader.readAsDataURL(file)
+  }
+
+  const dropzone = document.getElementById("dropzone")
+
+  ;["dragenter","dragover","dragleave","drop"].forEach(ev=>{
+    dropzone.addEventListener(ev,e=>{
+      e.preventDefault(); e.stopPropagation()
+    })
+  })
+
+  dropzone.addEventListener("drop",e=>{
+    handleFile(e.dataTransfer.files[0])
+  })
+
+
+  /* ================= ANALYZE ================= */
+  async function analyzeImage(base64){
+    const res = await fetch("/api/scan-food",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ image: base64 })
+    })
+
+    if(!res.ok){
+      console.error(await res.text())
+      showToast("Scan failed","error")
+      return
+    }
+
+    const data = await res.json()
+    if(!data.found){
+      showToast("Food not in database","error")
+      return
+    }
+
+    renderResult(data.nutrition)
+  }
+
+  function renderResult(n){
+    currentNutrition = n
+    foodName.innerText = n.food
+    foodCalories.innerText = Math.round(n["caloric value"])
+    proteinVal.innerText = n.protein + "g"
+    carbsVal.innerText = n.carbohydrates + "g"
+    fatVal.innerText = n.fat + "g"
+  }
+
+  async function addToToday(){
+    if(!currentNutrition) return showToast("No data to save","info")
+
+    const res = await fetch("/api/add-food-log",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({
+        nutrition: currentNutrition,
+        image: currentImage
+      })
+    })
+
+    if(res.ok){
+      showToast("Food added to today","success")
+    }else{
+      showToast("Save failed","error")
+    }
+  }
+
+  function showToast(msg, variant="info"){
+    const t = document.getElementById("toast")
+    t.innerText = msg
+    t.classList.remove("hidden","toast-error","toast-success","toast-info","toast-show")
+    t.classList.add(variant === "success" ? "toast-success" : variant === "error" ? "toast-error" : "toast-info")
+    requestAnimationFrame(()=>{
+      t.classList.add("toast-show")
+    })
+    setTimeout(()=>{
+      t.classList.remove("toast-show")
+      setTimeout(()=>t.classList.add("hidden"),300)
+    },2600)
+  }
+
+  // logout
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    if (confirm("Are you sure you want to logout?")) {
+      window.location.href = "/logout";
+    }
+  });
+
+  lucide.createIcons()
+</script>
+
+</body>
+</html>

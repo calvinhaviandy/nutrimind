@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Meal Plans - NutriMind</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300..800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { display: ["Manrope", "sans-serif"] },
+      colors: {
+        primary: "#135bec",
+        muted: "#637588",
+        bg: "#f6f6f8",
+      },
+    },
+  },
+};
+</script>
+</head>
+
+<body class="bg-bg font-display text-slate-900">
+
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar"
+      class="fixed md:relative inset-y-0 left-0 w-64 bg-white border-r z-40
+      transform -translate-x-full md:translate-x-0 transition duration-300 ease-in-out shadow-lg md:shadow-none">
+
+        <div class="h-16 flex items-center px-6 border-b">
+          <i data-lucide="leaf" class="text-primary mr-2"></i>
+          <span class="font-extrabold text-xl">NutriMind</span>
+        </div>
+
+        <nav class="p-4 space-y-2">
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted hover:bg-slate-100 transition-all duration-200 hover:translate-x-1 active:scale-95" href="dashboard">
+            <i data-lucide="layout-dashboard"></i> Dashboard
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted hover:bg-slate-100 transition-all duration-200 hover:translate-x-1 active:scale-95" href="food-log">
+            <i data-lucide="utensils"></i> Food Log
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary font-semibold transition-all duration-200 hover:translate-x-1 active:scale-95" href="meal-plan">
+            <i data-lucide="calendar"></i> Meal Plans
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted hover:bg-slate-100 transition-all duration-200 hover:translate-x-1 active:scale-95" href="reports"><i data-lucide="bar-chart-3"></i> Reports</a>
+
+              <p class="mt-6 text-xs font-bold uppercase text-muted px-3">Settings</p>
+
+              <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted hover:bg-slate-100 transition-all duration-200 hover:translate-x-1 active:scale-95"><i data-lucide="user"></i> Profile</a>
+              <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted hover:bg-slate-100 transition-all duration-200 hover:translate-x-1 active:scale-95"><i data-lucide="settings"></i> Preferences</a>
+        </nav>
+        <div class="absolute bottom-0 w-full border-t p-4">
+            <button id="logoutBtn"
+                class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
+                      text-muted hover:bg-red-50 hover:text-red-600 active:scale-95">
+                <i data-lucide="log-out" class="w-5"></i>
+                <span class="font-medium">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="flex-1 flex flex-col">
+
+      <header class="md:hidden h-16 bg-white border-b flex items-center justify-between px-4">
+        <span class="font-bold flex items-center gap-2">
+          <i data-lucide="leaf" class="text-primary"></i> NutriMind
+        </span>
+        <button onclick="toggleSidebar()" class="transition-transform duration-150 active:scale-90"><i data-lucide="menu"></i></button>
+      </header>
+
+      <main class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+
+        <h1 class="text-3xl font-black">Saved Meal Plans</h1>
+
+        <form class="mb-6 flex gap-3 items-end" onsubmit="applyFilter(event)">
+          <div>
+            <label class="text-xs font-bold text-muted">Date</label>
+            <input
+              type="date"
+              id="dateFilter"
+              class="border rounded-lg px-3 py-2 text-sm"
+            >
+          </div>
+
+          <button class="h-10 px-5 rounded-lg bg-primary text-white font-bold transition-transform duration-150 active:scale-95">
+            Filter
+          </button>
+
+        </form>
+
+        <!-- DESKTOP -->
+        <div class="hidden md:block">
+          <table class="hidden"></table>
+          <div id="tableBody" class="space-y-10"></div>
+        </div>
+
+        <!-- MOBILE -->
+        <div id="mobileList" class="md:hidden space-y-4"></div>
+
+      </main>
+    </div>
+  </div>
+
+<!-- MODAL MOBILE -->
+<div id="detailModal" class="fixed inset-0 bg-black/40 hidden opacity-0 transition-opacity duration-200 items-center justify-center z-50">
+  <div class="modal-panel bg-white rounded-xl w-full max-w-4xl p-6 max-h-[85vh] overflow-y-auto transition-transform duration-200 transform scale-95">
+
+    <div class="flex justify-between items-center mb-4">
+      <h3 id="modalTitle" class="text-xl font-black"></h3>
+      <button onclick="closeModal()" class="transition-transform duration-150 active:scale-90"><i data-lucide="x"></i></button>
+    </div>
+
+    <div id="modalSummary" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
+    <div id="modalMeals" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+
+  </div>
+</div>
+
+<script>
+  function toggleSidebar(){
+    document.getElementById("sidebar").classList.toggle("-translate-x-full")
+  }
+
+  const tableBody = document.getElementById("tableBody")
+  const mobileList = document.getElementById("mobileList")
+  const dateFilter = document.getElementById("dateFilter")
+
+  const modalTitle = document.getElementById("modalTitle")
+  const modalSummary = document.getElementById("modalSummary")
+  const modalMeals = document.getElementById("modalMeals")
+  const detailModal = document.getElementById("detailModal")
+  const modalPanel = detailModal.querySelector(".modal-panel")
+
+  let allPlans = []
+  let plans = []
+
+  function renderPlans(){
+    tableBody.innerHTML = ""
+    mobileList.innerHTML = ""
+
+    if(plans.length === 0){
+      tableBody.innerHTML = `<p class="text-muted text-center">No meal plan found</p>`
+      mobileList.innerHTML = `<p class="text-muted text-center">No meal plan found</p>`
+      return
+    }
+
+    plans.forEach((plan, index) => {
+
+      /* ===== DESKTOP ===== */
+      tableBody.innerHTML += `
+        <section class="bg-white border rounded-2xl p-6 space-y-6 transition duration-200 hover:-translate-y-1 hover:shadow-lg">
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-black">${plan.date}</h2>
+            <span class="text-sm font-semibold text-muted">
+              ${plan.summary.calories} kcal
+            </span>
+          </div>
+
+          <div class="grid grid-cols-4 gap-4">
+            <div class="bg-orange-50 rounded-xl p-3 text-center">
+              <p class="text-xs font-bold text-orange-600">Calories</p>
+              <p class="font-black">${plan.summary.calories}</p>
+            </div>
+            <div class="bg-blue-50 rounded-xl p-3 text-center">
+              <p class="text-xs font-bold text-blue-600">Protein</p>
+              <p class="font-black">${plan.summary.protein} g</p>
+            </div>
+            <div class="bg-yellow-50 rounded-xl p-3 text-center">
+              <p class="text-xs font-bold text-yellow-600">Carbs</p>
+              <p class="font-black">${plan.summary.carbs} g</p>
+            </div>
+            <div class="bg-green-50 rounded-xl p-3 text-center">
+              <p class="text-xs font-bold text-green-600">Fat</p>
+              <p class="font-black">${plan.summary.fat} g</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            ${plan.meals.map(meal => `
+              <div class="border rounded-xl p-4 space-y-2 transition duration-200 hover:border-primary/30 hover:-translate-y-0.5">
+                <p class="text-xs font-bold uppercase text-primary">${meal.type}</p>
+                <h3 class="font-black">${meal.title}</h3>
+                <p class="text-sm text-muted">${meal.desc}</p>
+                <div class="flex flex-wrap gap-2">
+                  ${meal.items.map(i => `
+                    <span class="px-3 py-1 text-xs rounded-full bg-primary/10 text-primary">
+                      ${i}
+                    </span>
+                  `).join("")}
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+      `
+
+      /* ===== MOBILE ===== */
+      mobileList.innerHTML += `
+        <div class="bg-white border rounded-xl p-4 transition duration-200 hover:-translate-y-1 hover:shadow-md">
+          <p class="font-bold text-primary">${plan.date}</p>
+          <p class="text-sm text-muted mb-2">
+            ${plan.meals.length} meals · ${plan.summary.calories} kcal
+          </p>
+          <button onclick="openModal(${index})"
+            class="w-full py-2 bg-primary text-white text-sm font-bold rounded-lg transition-transform duration-150 active:scale-95">
+            View Details
+          </button>
+        </div>
+      `
+    })
+
+    lucide.createIcons()
+  }
+
+  function applyFilter(e){
+    e.preventDefault()
+    const selectedDate = dateFilter.value
+    plans = selectedDate
+      ? allPlans.filter(p => p.date === selectedDate)
+      : [...allPlans]
+    renderPlans()
+  }
+
+  function openModal(index){
+    const plan = plans[index]
+    modalTitle.innerText = "Meal Plan – " + plan.date
+
+    modalSummary.innerHTML = `
+      <div class="bg-orange-50 border rounded-xl p-3 text-center">
+        <p class="text-xs font-bold text-orange-600">Calories</p>
+        <p class="font-black">${plan.summary.calories} kcal</p>
+      </div>
+      <div class="bg-blue-50 border rounded-xl p-3 text-center">
+        <p class="text-xs font-bold text-blue-600">Protein</p>
+        <p class="font-black">${plan.summary.protein} g</p>
+      </div>
+      <div class="bg-yellow-50 border rounded-xl p-3 text-center">
+        <p class="text-xs font-bold text-yellow-600">Carbs</p>
+        <p class="font-black">${plan.summary.carbs} g</p>
+      </div>
+      <div class="bg-green-50 border rounded-xl p-3 text-center">
+        <p class="text-xs font-bold text-green-600">Fat</p>
+        <p class="font-black">${plan.summary.fat} g</p>
+      </div>
+    `
+
+    modalMeals.innerHTML = plan.meals.map(meal => `
+    <div class="border rounded-xl p-4 space-y-2">
+      <p class="text-xs font-bold uppercase text-primary">${meal.type}</p>
+      <h4 class="font-black">${meal.title}</h4>
+      <p class="text-sm text-muted">${meal.desc}</p>
+
+      <div class="flex flex-wrap gap-2">
+        ${meal.items.map(i => `
+          <span class="px-3 py-1 text-xs rounded-full bg-primary/10 text-primary">
+            ${i}
+          </span>
+        `).join("")}
+      </div>
+    </div>
+  `).join("")
+
+
+    detailModal.classList.remove("hidden")
+    detailModal.classList.add("flex")
+    requestAnimationFrame(() => {
+      detailModal.classList.remove("opacity-0")
+      modalPanel.classList.remove("scale-95")
+      modalPanel.classList.add("scale-100")
+    })
+  }
+
+  function closeModal(){
+    detailModal.classList.add("opacity-0")
+    modalPanel.classList.add("scale-95")
+    modalPanel.classList.remove("scale-100")
+    setTimeout(() => {
+      detailModal.classList.add("hidden")
+      detailModal.classList.remove("flex")
+    }, 200)
+  }
+
+  fetch("/api/meal-plans")
+    .then(res => res.json())
+    .then(data => {
+      allPlans = data
+      plans = [...data]
+      renderPlans()
+    })
+    .catch(err => {
+      console.error("Failed to load meal plans", err)
+      lucide.createIcons()
+    })
+
+  // initial icon render so sidebar/hamburger show even before data loads
+  lucide.createIcons()
+
+  // logout
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    if (confirm("Are you sure you want to logout?")) {
+      window.location.href = "/logout";
+    }
+  });
+</script>
+
+</body>
+</html>
