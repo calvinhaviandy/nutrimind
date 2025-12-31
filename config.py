@@ -2,5 +2,6 @@ MYSQL_CONFIG = {
     "host": "localhost",
     "user": "root",
     "password": "",
-    "database": "nutrimind"
+    "database": "nutrimind",
+    "port": 3306
 }
