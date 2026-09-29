@@ -1,8 +1,8 @@
-import os
+from pathlib import Path
 import pandas as pd
 from rapidfuzz import process, fuzz
 
-DATA_DIR = "data"
+DATA_DIR = Path(__file__).resolve().parent / "data"
 
 _food_df = None
 _food_names = None
@@ -15,9 +15,9 @@ def load_food_data():
         return _food_df, _food_names
 
     dfs = []
-    for file in os.listdir(DATA_DIR):
-        if file.endswith(".csv"):
-            df = pd.read_csv(os.path.join(DATA_DIR, file))
+    for file in DATA_DIR.iterdir():
+        if file.suffix.lower() == ".csv":
+            df = pd.read_csv(file)
             df.columns = [c.strip().lower() for c in df.columns]
             dfs.append(df)
 
@@ -57,3 +57,12 @@ def match_food(food_name: str, score_cutoff=75):
     row = df[df["food"] == matched_name].iloc[0]
 
     return normalize_row(row)
+
+
+def get_food_exact(food_name: str):
+    """Look up one catalog food without substituting a different dish."""
+    df, _ = load_food_data()
+    rows = df[df["food"] == food_name.strip().lower()]
+    if rows.empty:
+        return None
+    return normalize_row(rows.iloc[0])

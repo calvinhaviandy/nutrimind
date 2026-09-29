@@ -1,1 +1,12 @@
 .env
+.venv/
+__pycache__/
+*.pyc
+frontend/node_modules/
+frontend/dist/
+*.tsbuildinfo
+.pytest_cache/
+.vercel/
+static/uploads/
+
+.vercel

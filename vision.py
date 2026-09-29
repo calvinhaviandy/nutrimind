@@ -1,8 +1,5 @@
 from openai import OpenAI
-from dotenv import load_dotenv
-
-load_dotenv()
-client = OpenAI()
+from config import OPENAI_MODEL
 
 def analyze_food_image(base64_image: str) -> str:
     """
@@ -11,8 +8,9 @@ def analyze_food_image(base64_image: str) -> str:
 
     data_url = f"data:image/jpeg;base64,{base64_image}"
 
-    response = client.responses.create(
-        model="gpt-4.1-mini",
+    response = OpenAI().responses.create(
+        model=OPENAI_MODEL,
+        reasoning={"effort": "low"},
         input=[{
             "role": "user",
             "content": [

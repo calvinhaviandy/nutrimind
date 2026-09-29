@@ -1,5 +1,5 @@
-from nutrition_csv import match_food
-from openai_meal_ai import recommend_meals
+from nutrition_csv import get_food_exact
+from openai_meal_ai import MealPlanResponseError, recommend_meals
 
 # BMR & TDEE
 def calculate_bmr(gender, weight, height, age):
@@ -70,7 +70,7 @@ def generate_meal_plan(form):
 
     tdee = int(bmr * activity_multiplier(form["activity"]))
 
-    meals_ai = recommend_meals(form)
+    meals_ai = recommend_meals(form, tdee)
 
     summary = {"calories": 0, "protein": 0, "carbs": 0, "fat": 0}
     meals = []
@@ -80,9 +80,11 @@ def generate_meal_plan(form):
         items = []
 
         for food in foods:
-            data = match_food(food)
-            if not data:
-                continue
+            data = get_food_exact(food)
+            if not data or data.get("caloric value", 0) <= 0:
+                raise MealPlanResponseError(
+                    "Makanan dalam rencana tidak memiliki data nutrisi yang valid. Silakan coba lagi."
+                )
 
             items.append(data["food"])
 
@@ -101,6 +103,9 @@ def generate_meal_plan(form):
             "calories": round(meal_cal),
             "items": items
         })
+
+    if len(meals) != 4 or any(not meal["items"] or meal["calories"] <= 0 for meal in meals):
+        raise MealPlanResponseError("Rencana makan belum lengkap. Silakan coba lagi.")
 
     return {
         "target_calories": tdee,
